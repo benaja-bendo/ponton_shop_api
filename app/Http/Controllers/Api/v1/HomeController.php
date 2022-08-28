@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): array
     {
         return [
             "success" => true,
