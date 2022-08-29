@@ -13,4 +13,14 @@ Route::get('/', v1HomeController::class);
 
 Route::prefix('v1')->group(function () {
     Route::post('/register', [AuthController::class, 'createUser']);
+    Route::post('/login', [AuthController::class, 'loginUser']);
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+
+    Route::group(["middleware" => ['auth:sanctum']], function () {
+        Route::get('/products', function () {
+            return [
+                'hello' => 'word',
+            ];
+        });
+    });
 });
