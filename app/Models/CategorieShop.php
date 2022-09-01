@@ -9,4 +9,5 @@ class CategorieShop extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
 }
