@@ -69,7 +69,7 @@ class CategoriesProductsController extends Controller
      */
     public function show(CategorieProduct $categorieProduct,$id)
     {
-        $categorieProduct = CategorieProduct::find($id);
+        $categorieProduct = CategorieProduct::findOrFail($id);
 
         return $categorieProduct;
     }
