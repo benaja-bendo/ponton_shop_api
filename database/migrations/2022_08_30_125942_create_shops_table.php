@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('shops', function (Blueprint $table) {
             $table->id();
             $table->string("name");
-            $table->text("description")->nullable();
+            $table->longText("description")->nullable();
             $table->string("address")->nullable();
             $table->string("city")->nullable();
             $table->string("postal_code")->nullable();
