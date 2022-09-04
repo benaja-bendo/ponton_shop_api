@@ -19,17 +19,13 @@ Route::prefix('v1')->group(function () {
     Route::post('/login', [AuthController::class, 'loginUser']);
     // Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 
-    Route::apiResource('catégorie-products',CategoriesProductsController::class);
-    Route::apiResource('catégorie-shops',CategorieShopsController::class);
-    Route::apiResource('sub-catégorie-products',SubCategoriesController::class);
-    Route::apiResource('products',ProductsController::class);
-    Route::apiResource('shops',ShopsController::class);
+    Route::apiResource('catégorie-products', CategoriesProductsController::class);
+    Route::apiResource('catégorie-shops', CategorieShopsController::class);
+    Route::apiResource('sub-catégorie-products', SubCategoriesController::class);
+    Route::apiResource('products', ProductsController::class);
+    Route::apiResource('shops', ShopsController::class);
 
     Route::group(["middleware" => ['auth:sanctum']], function () {
         Route::post('/logout', [AuthController::class, 'logout']);
-
     });
 });
-
-
-
