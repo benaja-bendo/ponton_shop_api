@@ -22,16 +22,12 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('catégorie-products',CategoriesProductsController::class);
     Route::apiResource('catégorie-shops',CategorieShopsController::class);
     Route::apiResource('sub-catégorie-products',SubCategoriesController::class);
-    Route::apiResource('products-all',ProductsController::class);
+    Route::apiResource('products',ProductsController::class);
     Route::apiResource('shops',ShopsController::class);
 
     Route::group(["middleware" => ['auth:sanctum']], function () {
-        Route::get('/products', function () {
-            return [
-                'hello' => 'word',
-            ];
-        });
         Route::post('/logout', [AuthController::class, 'logout']);
+
     });
 });
 
