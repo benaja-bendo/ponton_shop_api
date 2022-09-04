@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('small_description');
             $table->longText('long_description')->nullable();
             $table->float('price');
-            $table->enum('status', ["disponible", "pas disponible"]);
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

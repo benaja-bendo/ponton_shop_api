@@ -16,29 +16,18 @@ class CategoriesProductsController extends Controller
     public function index()
     {
 
-        $categoriesProducts = CategorieProduct::all();
+        $CategorieProducts = CategorieProduct::all();
 
         return response()->json([
-            "success" => true,
-            "message" => "all catégories products",
+            'success' => true,
+            'message' => 'all catégories products',
             'data' => [
-                "version" => "1.0",
-                "language" => app()->getLocale(),
-                "support" => env("APP_SUPPORT")
+                'CategorieProducts' => $CategorieProducts,
             ],
-            'catégories-products' => $categoriesProducts,
+
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -55,10 +44,12 @@ class CategoriesProductsController extends Controller
         $CategorieProduct = CategorieProduct::create($request->all());
 
         return response()->json([
-            "success" => true,
-            "message" => "catégorie create succssfully",
-            'CategorieProduct' => $CategorieProduct,
-        ], 200);
+            'success' => true,
+            'message' => 'catégorie create succssfully',
+            'data' => [
+                'CategorieProduct' => $CategorieProduct,
+            ],
+        ], 201);
     }
 
     /**
@@ -74,16 +65,6 @@ class CategoriesProductsController extends Controller
         return $categorieProduct;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\CategorieProduct  $categorieProduct
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(CategorieProduct $categorieProduct)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -94,6 +75,10 @@ class CategoriesProductsController extends Controller
      */
     public function update(Request $request, CategorieProduct $categorieProduct, $id)
     {
+        $request->validate([
+            'name'=>'required',
+        ]);
+
         $categorieProduct = CategorieProduct::findOrFail($id);
         $categorieProduct->update($request->all());
 
@@ -108,10 +93,12 @@ class CategoriesProductsController extends Controller
      */
     public function destroy(CategorieProduct $categorieProduct, $id)
     {
+        $categorieProduct = CategorieProduct::findOrFail($id);
         $categorieProduct = CategorieProduct::destroy($id);
+
         return response()->json([
-            "success" => true,
-            "message" => "catégorie delete succssfully"
+            'success' => true,
+            'message' => 'catégorie delete succssfully'
         ], 200);
     }
 }

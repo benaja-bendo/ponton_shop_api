@@ -18,14 +18,11 @@ class CategorieShopsController extends Controller
         $categorieShops = CategorieShop::all();
 
         return response()->json([
-            "success" => true,
-            "message" => "all catégories shops",
+            'success' => true,
+            'message' => 'all catégories shops',
             'data' => [
-                "version" => "1.0",
-                "language" => app()->getLocale(),
-                "support" => env("APP_SUPPORT")
+                'catégorie-shops' => $categorieShops,
             ],
-            'catégorie-shops' => $categorieShops,
         ]);
     }
 
@@ -44,10 +41,12 @@ class CategorieShopsController extends Controller
         $categorieShop = CategorieShop::create($request->all());
 
         return response()->json([
-            "success" => true,
-            "message" => "catégorie create succssfully",
-            'categorieShop' => $categorieShop,
-        ], 200);
+            'success' => true,
+            'message' => 'catégorie create succssfully',
+            'data' => [
+                'categorieShop' => $categorieShop,
+            ],
+        ], 201);
     }
 
     /**
@@ -72,6 +71,9 @@ class CategorieShopsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'name' => 'required'
+        ]);
 
         $categorieShop = CategorieShop::findOrFail($id);
         $categorieShop->update($request->all());
@@ -91,8 +93,8 @@ class CategorieShopsController extends Controller
         $categorieShop->destroy($id);
 
         return response()->json([
-            "success" => true,
-            "message" => "catégorie delete succssfully"
+            'success' => true,
+            'message' => 'catégorie delete succssfully'
         ], 200);
     }
 }

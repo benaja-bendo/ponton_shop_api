@@ -18,15 +18,12 @@ class ShopsController extends Controller
         $shops = Shop::all();
 
         return response()->json([
-            "success" => true,
-            "message" => "all shops",
+            'success' => true,
+            'message' => 'all shops',
             'data' => [
-                "version" => "1.0",
-                "language" => app()->getLocale(),
-                "support" => env("APP_SUPPORT")
+                'shops' => $shops,
             ],
-            'shops' => $shops,
-        ]);
+        ],200);
     }
 
     /**
@@ -44,17 +41,19 @@ class ShopsController extends Controller
             'city' => 'string',
             'postal_code' => 'string',
             'web' => 'string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email',
             'telephone' => 'string',
         ]);
 
         $shop = Shop::create($request->all());
 
         return response()->json([
-            "success" => true,
-            "message" => "shop create succssfully",
-            'shop' => $shop,
-        ], 200);
+            'success' => true,
+            'message' => 'shop create succssfully',
+            'data' => [
+                'shop' => $shop,
+            ],
+        ], 201);
     }
 
     /**
@@ -79,6 +78,17 @@ class ShopsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'string',
+            'address' => 'string',
+            'city' => 'string',
+            'postal_code' => 'string',
+            'web' => 'string|max:255',
+            'email' => 'required|string|email',
+            'telephone' => 'string',
+        ]);
+
         $shop = Shop::FindOrFail($id);
         $shop->update($request->all());
 
@@ -97,8 +107,8 @@ class ShopsController extends Controller
         $shop->destroy($id);
 
         return response()->json([
-            "success" => true,
-            "message" => "shop delete succssfully"
+            'success' => true,
+            'message' => 'shop delete succssfully'
         ], 200);
     }
 }

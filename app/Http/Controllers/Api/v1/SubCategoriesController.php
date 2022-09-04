@@ -18,14 +18,11 @@ class SubCategoriesController extends Controller
         $SubCategoriesProducts = SubCategorieProduct::all();
 
         return response()->json([
-            "success" => true,
-            "message" => "all sub catégories products",
+            'success' => true,
+            'message' => 'all sub catégories products',
             'data' => [
-                "version" => "1.0",
-                "language" => app()->getLocale(),
-                "support" => env("APP_SUPPORT")
+                'SubCategoriesProducts' => $SubCategoriesProducts,
             ],
-            'SubCategoriesProducts' => $SubCategoriesProducts,
         ]);
     }
 
@@ -45,10 +42,12 @@ class SubCategoriesController extends Controller
         $SubCategorie = SubCategorieProduct::create($request->all());
 
         return response()->json([
-            "success" => true,
-            "message" => "sub catégorie create succssfully",
-            'SubCategorie' => $SubCategorie,
-        ], 200);
+            'success' => true,
+            'message' => 'sub catégorie create succssfully',
+            'data' => [
+                'SubCategorie' => $SubCategorie,
+            ],
+        ], 201);
     }
 
     /**
@@ -73,6 +72,11 @@ class SubCategoriesController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'name' => 'required',
+            'categorie_product_id' => 'required'
+        ]);
+
         $SubCategorie = SubCategorieProduct::FindOrFail($id);
         $SubCategorie->update($request->all());
 
@@ -91,8 +95,8 @@ class SubCategoriesController extends Controller
         $SubCategorie->destroy($id);
 
         return response()->json([
-            "success" => true,
-            "message" => "sub catégorie delete succssfully"
+            'success' => true,
+            'message' => 'sub catégorie delete succssfully'
         ], 200);
     }
 }

@@ -18,14 +18,11 @@ class ProductsController extends Controller
         $products = Product::all();
 
         return response()->json([
-            "success" => true,
-            "message" => "all products",
+            'success' => true,
+            'message' => 'all products',
             'data' => [
-                "version" => "1.0",
-                "language" => app()->getLocale(),
-                "support" => env("APP_SUPPORT")
+                'products' => $products,
             ],
-            'products' => $products,
         ]);
     }
 
@@ -40,17 +37,20 @@ class ProductsController extends Controller
 
         $request->validate([
             'name' => 'required',
-            'small_description' => 'required',
+            'small_description' => 'required|string',
+            'long_description' => 'string',
             'price' => 'required|numeric',
-            'status' => 'required|',
         ]);
+
         $product = Product::create($request->all());
 
         return response()->json([
-            "success" => true,
-            "message" => "product create succssfully",
-            'product' => $product,
-        ], 200);
+            'success' => true,
+            'message' => "product create succssfully",
+            'data' => [
+                'product' => $product,
+            ]
+        ], 201);
 
     }
 
@@ -76,7 +76,14 @@ class ProductsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $product = Product::FindOrFail($id);
+        $request->validate([
+            'name' => 'required',
+            'small_description' => 'required|string',
+            'long_description' => 'string',
+            'price' => 'required|numeric',
+        ]);
+
+        $product = Product::findOrFail($id);
         $product->update($request->all());
 
         return $product;
@@ -92,8 +99,8 @@ class ProductsController extends Controller
     {
         $product = Product::destroy($id);
         return response()->json([
-            "success" => true,
-            "message" => "product delete succssfully"
+            'success' => true,
+            'message' => 'product delete succssfully'
         ], 200);
     }
 }
