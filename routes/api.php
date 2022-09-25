@@ -20,13 +20,19 @@ Route::prefix('v1')->group(function () {
     Route::post('/register', [AuthController::class, 'createUser']);
     Route::post('/login', [AuthController::class, 'loginUser']);
 
-    Route::apiResource('catégorie-products',CategoriesProductsController::class);
-    Route::apiResource('catégorie-shops',CategorieShopsController::class);
-    Route::apiResource('sub-catégorie-products',SubCategoriesController::class);
     Route::apiResource('products',ProductsController::class);
-    Route::apiResource('shops',ShopsController::class);
+
     Route::apiResource('image-product',ImageProductsController::class)->except(['update']);
     Route::post('/image-product/{id}', [ImageProductsController::class, 'update']);
+
+    Route::apiResource('catégorie-products',CategoriesProductsController::class);
+
+    Route::apiResource('sub-catégorie-products',SubCategoriesController::class);
+
+    Route::apiResource('shops',ShopsController::class);
+
+    Route::apiResource('catégorie-shops',CategorieShopsController::class);
+
 
     Route::group(["middleware" => ['auth:sanctum']], function () {
         Route::post('/logout', [AuthController::class, 'logout']);
