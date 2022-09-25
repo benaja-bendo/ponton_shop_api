@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\CategorieProduct;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\ImageProduct;
 
 class Product extends Model
 {
@@ -14,5 +16,10 @@ class Product extends Model
     public function imageProduct()
     {
         return $this->hasMany(ImageProduct::class);
+    }
+
+    public function categorieProduct()
+    {
+        return $this->belognsTo(CategorieProduct::class);
     }
 }

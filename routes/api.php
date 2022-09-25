@@ -3,8 +3,10 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\v1\AuthController;
+use App\Http\Controllers\Api\v1\HomeController;
 use App\Http\Controllers\Api\v1\ShopsController;
 use App\Http\Controllers\Api\v1\ProductsController;
+use App\Http\Controllers\Api\v1\ImageProductsController;
 use App\Http\Controllers\Api\v1\SubCategoriesController;
 use App\Http\Controllers\Api\v1\CategorieShopsController;
 use App\Http\Controllers\Api\v1\CategoriesShopsController;
@@ -18,11 +20,13 @@ Route::prefix('v1')->group(function () {
     Route::post('/register', [AuthController::class, 'createUser']);
     Route::post('/login', [AuthController::class, 'loginUser']);
 
-    Route::apiResource('catégorie-products', CategoriesProductsController::class);
-    Route::apiResource('catégorie-shops', CategorieShopsController::class);
-    Route::apiResource('sub-catégorie-products', SubCategoriesController::class);
-    Route::apiResource('products', ProductsController::class);
-    Route::apiResource('shops', ShopsController::class);
+    Route::apiResource('catégorie-products',CategoriesProductsController::class);
+    Route::apiResource('catégorie-shops',CategorieShopsController::class);
+    Route::apiResource('sub-catégorie-products',SubCategoriesController::class);
+    Route::apiResource('products',ProductsController::class);
+    Route::apiResource('shops',ShopsController::class);
+    Route::apiResource('image-product',ImageProductsController::class)->except(['update']);
+    Route::post('/image-product/{id}', [ImageProductsController::class, 'update']);
 
     Route::group(["middleware" => ['auth:sanctum']], function () {
         Route::post('/logout', [AuthController::class, 'logout']);
