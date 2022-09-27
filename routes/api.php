@@ -21,6 +21,8 @@ Route::get('/', v1HomeController::class);
 Route::prefix('v1')->group(function () {
     Route::post('/register', [AuthController::class, 'createUser']);
     Route::post('/login', [AuthController::class, 'loginUser']);
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
     Route::apiResource('catégorie-products',CategoriesProductsController::class);
     Route::apiResource('catégorie-shops',CategorieShopsController::class);
