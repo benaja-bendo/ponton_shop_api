@@ -20,6 +20,6 @@ class Product extends Model
 
     public function categorieProduct()
     {
-        return $this->belognsTo(CategorieProduct::class);
+        return $this->belongsTo(CategorieProduct::class);
     }
 }

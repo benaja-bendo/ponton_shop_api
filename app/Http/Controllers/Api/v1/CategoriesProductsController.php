@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api\v1;
 
-use App\Http\Controllers\Controller;
-use App\Models\CategorieProduct;
 use Illuminate\Http\Request;
+use App\Models\CategorieProduct;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\CategorieProductResource;
+use App\Http\Resources\CategorieProductResourceCollection;
 
 class CategoriesProductsController extends Controller
 {
@@ -22,7 +24,8 @@ class CategoriesProductsController extends Controller
             'success' => true,
             'message' => 'all catégories products',
             'data' => [
-                'CategorieProducts' => $CategorieProducts,
+                'CategorieProducts' => new CategorieProductResourceCollection($CategorieProducts),
+                // 'CategorieProducts' => CategorieProductRessource::collection($CategorieProducts),
             ],
 
         ]);
@@ -62,7 +65,7 @@ class CategoriesProductsController extends Controller
     {
         $categorieProduct = CategorieProduct::findOrFail($id);
 
-        return $categorieProduct;
+        return new CategorieProductResource($categorieProduct);
     }
 
 

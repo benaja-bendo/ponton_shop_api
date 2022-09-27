@@ -64,7 +64,7 @@ class ShopsController extends Controller
      */
     public function show($id)
     {
-        $shop = Shop::FindOrFail($id);
+        $shop = Shop::findOrFail($id);
 
         return $shop;
     }
@@ -103,9 +103,8 @@ class ShopsController extends Controller
      */
     public function destroy($id)
     {
-        $shop = shop::FindOrFail($id);
+        $shop = shop::findOrFail($id);
         $shop->destroy($id);
-
         return response()->json([
             'success' => true,
             'message' => 'shop delete succssfully'

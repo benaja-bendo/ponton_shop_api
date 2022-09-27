@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Shop;
+use App\Models\CategorieShop;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -12,8 +13,8 @@ class Shop extends Model
 
     protected $guarded = [];
 
-    public function shop()
+    public function categorieShop()
     {
-        return $this->belognsTo(Shop::class);
+        return $this->belognsTo(CategorieShop::class);
     }
 }

@@ -42,25 +42,34 @@ class ImageProductsController extends Controller
 
         $path = null;
 
-        if ($request->hasFile("path")) {
-            $path = saveFileToStorageDirectory($request,"path","images_products");
+        $imagesProduct = ImageProduct::where('cover',1)->where('product_id',$request->product_id)->first();
+
+        if ($imagesProduct)
+        {
+            dd("Une image pour ce produit est déja en cover ");
+        } else
+
+        {
+            if ($request->hasFile("path")) {
+                $path = saveFileToStorageDirectory($request,"path","images_products");
+            }
+
+            $data = ImageProduct::create(
+                [
+                    'path' => $path,
+                    'cover' => $request->cover,
+                    'product_id' => $request->product_id
+                ]
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'ImageProduct create succssfully',
+                'data' => [
+                    'image' => $data,
+                ],
+            ], 201);
         }
-
-        $data = ImageProduct::create(
-            [
-                'path' => $path,
-                'cover' => $request->cover,
-                'product_id' => $request->product_id
-            ]
-        );
-
-        return response()->json([
-            'success' => true,
-            'message' => 'ImageProduct create succssfully',
-            'data' => [
-                'image' => $data,
-            ],
-        ], 201);
     }
 
     /**
@@ -118,6 +127,12 @@ class ImageProductsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $image = ImageProduct::findOrFail($id);
+        $image->destroy($id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'image product delete succssfully'
+        ], 200);
     }
 }

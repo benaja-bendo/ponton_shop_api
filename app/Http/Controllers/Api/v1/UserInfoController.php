@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\Models\UserInfo;
 use Illuminate\Http\Request;
-use App\Models\CategorieShop;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CategorieShopResource;
-use App\Http\Resources\CategorieShopResourceCollection;
 
-class CategorieShopsController extends Controller
+class UserInfoController extends Controller
 {
+
+
     /**
      * Display a listing of the resource.
      *
@@ -17,14 +17,15 @@ class CategorieShopsController extends Controller
      */
     public function index()
     {
-        $categorieShops = CategorieShop::all();
+        $userInfos = UserInfo::paginate(10);
+
         return response()->json([
             'success' => true,
-            'message' => 'all catégories shops',
+            'message' => 'all UserInfo',
             'data' => [
-                'catégorie-shops' => new CategorieShopResourceCollection($categorieShops),
+                'userInfo' => $userInfos,
             ],
-        ]);
+        ],200);
     }
 
     /**
@@ -35,18 +36,25 @@ class CategorieShopsController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required'
+        $this->validate($request, [
+            'first_name' => 'string|max:255',
+            'last_name' => 'string|max:255',
+            'address' => 'string|max:255',
+            'code_postal' => 'string|max:255',
+            'city' => 'string|max:255',
+            'phone' => 'string|max:255',
+            'user_id' => 'required',
         ]);
 
-        $categorieShop = CategorieShop::create($request->all());
+
+        $userInfo = UserInfo::create($request->all());
 
         return response()->json([
             'success' => true,
-            'message' => 'catégorie create succssfully',
+            'message' => "Info user create succssfully",
             'data' => [
-                'categorieShop' => $categorieShop,
-            ],
+                'userInfo' => $userInfo,
+            ]
         ], 201);
     }
 
@@ -58,9 +66,9 @@ class CategorieShopsController extends Controller
      */
     public function show($id)
     {
-        $categorieShop = CategorieShop::findOrFail($id);
+        $userInfo = UserInfo::findOrFail($id);
 
-        return new CategorieShopResource($categorieShop);
+        return $userInfo;
     }
 
     /**
@@ -72,14 +80,20 @@ class CategorieShopsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'required'
+        $this->validate($request, [
+            'first_name' => 'string|max:255',
+            'last_name' => 'string|max:255',
+            'address' => 'string|max:255',
+            'code_postal' => 'string|max:255',
+            'city' => 'string|max:255',
+            'phone' => 'string|max:255',
+            'user_id' => 'required',
         ]);
 
-        $categorieShop = CategorieShop::findOrFail($id);
-        $categorieShop->update($request->all());
+        $userInfo = UserInfo::findOrFail($id);
+        $userInfo->update($request->all());
 
-        return $categorieShop;
+        return $userInfo;
     }
 
     /**
@@ -90,12 +104,12 @@ class CategorieShopsController extends Controller
      */
     public function destroy($id)
     {
-        $categorieShop = CategorieShop::findOrFail($id);
-        $categorieShop->destroy($id);
+        $userInfo = UserInfo::findOrFail($id);
+        $userInfo->destroy($id);
 
         return response()->json([
             'success' => true,
-            'message' => 'catégorie delete succssfully'
+            'message' => 'Info user delete succssfully'
         ], 200);
     }
 }

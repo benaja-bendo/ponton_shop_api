@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\v1;
 use Illuminate\Http\Request;
 use App\Models\SubCategorieProduct;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\SubCategorieProductResource;
+use App\Http\Resources\SubCategorieProductResourceCollection;
 
 class SubCategoriesController extends Controller
 {
@@ -21,7 +23,7 @@ class SubCategoriesController extends Controller
             'success' => true,
             'message' => 'all sub catégories products',
             'data' => [
-                'SubCategoriesProducts' => $SubCategoriesProducts,
+                'SubCategoriesProducts' => new SubCategorieProductResourceCollection($SubCategoriesProducts),
             ],
         ]);
     }
@@ -60,7 +62,7 @@ class SubCategoriesController extends Controller
     {
         $SubCategorie = SubCategorieProduct::FindOrFail($id);
 
-        return $SubCategorie;
+        return new SubCategorieProductResource($SubCategorie);
     }
 
     /**

@@ -18,3 +18,13 @@ function saveFileToStorageDirectory(Request $request, string $key_name, string $
     $path =  DIRECTORY_SEPARATOR . "storage" . DIRECTORY_SEPARATOR . $request->file($key_name)->storeAs($name_directory_storage, $imageName, 'public');
     return $path;
 }
+
+
+// fonction pour faire un findOrFail
+
+// function findOrFaill(Modal $modal,int $id)
+// {
+//     $instance = $modal::findOrFail($id);
+
+//     return $instance;
+// }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\v1;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProductResource;
+use App\Http\Resources\ProductResourceCollection;
 
 class ProductsController extends Controller
 {
@@ -15,13 +17,13 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        $products = Product::paginate(10);
 
         return response()->json([
             'success' => true,
             'message' => 'all products',
             'data' => [
-                'products' => $products,
+                'products' => new ProductResourceCollection($products),
             ],
         ]);
     }
@@ -64,7 +66,7 @@ class ProductsController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        return $product;
+        return new ProductResource($product);
     }
 
     /**
