@@ -19,23 +19,26 @@ use App\Http\Controllers\Api\v1\HomeController as v1HomeController;
 Route::get('/', v1HomeController::class);
 
 Route::prefix('v1')->group(function () {
+    //Auth
     Route::post('/register', [AuthController::class, 'createUser']);
     Route::post('/login', [AuthController::class, 'loginUser']);
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
-
-    Route::apiResource('catégorie-products',CategoriesProductsController::class);
-    Route::apiResource('catégorie-shops',CategorieShopsController::class);
-    Route::apiResource('sub-catégorie-products',SubCategoriesController::class);
-    Route::apiResource('products',ProductsController::class);
-    Route::apiResource('shops',ShopsController::class);
-    Route::apiResource('image-product',ImageProductsController::class)->except(['update']);
+    // Product
+    Route::apiResource('products', ProductsController::class);
+    Route::get('products/search/{query}', [ProductsController::class, 'search']);
+    // Image Product
+    Route::apiResource('image-product', ImageProductsController::class)->except(['update', 'index']);
     Route::post('/image-product/{id}', [ImageProductsController::class, 'update']);
 
+    Route::apiResource('catégorie-products', CategoriesProductsController::class);
+    Route::apiResource('catégorie-shops', CategorieShopsController::class);
+    Route::apiResource('sub-catégorie-products', SubCategoriesController::class);
+    Route::apiResource('shops', ShopsController::class);
 
-    Route::apiResource('slider-image',SliderImagesController::class)->except('update');
+    Route::apiResource('slider-image', SliderImagesController::class)->except('update');
     Route::post('/slider-image/{id}', [SliderImagesController::class, 'update']);
-    Route::apiResource('user-info',UserInfoController::class);
+    Route::apiResource('user-info', UserInfoController::class);
 
     Route::group(["middleware" => ['auth:sanctum']], function () {
         Route::post('/logout', [AuthController::class, 'logout']);

@@ -14,17 +14,11 @@ use Illuminate\Http\Request;
  */
 function saveFileToStorageDirectory(Request $request, string $key_name, string $name_directory_storage = ""): string
 {
-    $imageName = time() . '' . trim(str_replace(" ", "", $request->file($key_name)->getClientOriginalName()));
-    $path =  DIRECTORY_SEPARATOR . "storage" . DIRECTORY_SEPARATOR . $request->file($key_name)->storeAs($name_directory_storage, $imageName, 'public');
+    $path = null;
+    if ($request->hasFile($key_name)) {
+        $imageName = time() . '' . trim(str_replace(" ", "", $request->file($key_name)->getClientOriginalName()));
+        $path = DIRECTORY_SEPARATOR . "storage" . DIRECTORY_SEPARATOR . $request->file($key_name)->storeAs($name_directory_storage, $imageName, 'public');
+    }
     return $path;
 }
 
-
-// fonction pour faire un findOrFail
-
-// function findOrFaill(Modal $modal,int $id)
-// {
-//     $instance = $modal::findOrFail($id);
-
-//     return $instance;
-// }

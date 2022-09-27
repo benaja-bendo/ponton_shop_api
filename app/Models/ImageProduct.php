@@ -12,7 +12,7 @@ class ImageProduct extends Model
 
     protected $guarded = [];
 
-    public function product()
+    public function product(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Product::class);
     }

@@ -19,9 +19,10 @@ class ProductsSeeder extends Seeder
         for ($i = 0; $i < 100; $i++) {
             Product::create([
                 'name' => Factory::create()->name(),
-                'small_description' => Factory::create()->sentence(),
+                'small_description' => Factory::create()->sentence(5),
                 'long_description' => Factory::create()->sentence(100),
                 'price' => Factory::create()->numberBetween($min = 1500, $max = 6000),
+                'status' => Factory::create()->randomElement(['stock', 'rupture', 'recommande']),
             ]);
         }
     }

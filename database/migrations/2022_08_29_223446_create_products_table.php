@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -18,8 +17,9 @@ return new class extends Migration
             $table->string('name');
             $table->text('small_description');
             $table->longText('long_description')->nullable();
-            $table->float('price');
-            $table->boolean('status')->default(true);
+            $table->float('price')->nullable();
+            $table->boolean('disponible')->default(true);// pour admin possibilité de bloquer le produit
+            $table->enum('status', ['stock', 'rupture', 'recommande'])->nullable(); // pour vendeur définir le status de son produit
             $table->timestamps();
         });
     }

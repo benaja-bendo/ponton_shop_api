@@ -2,36 +2,30 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\Http\Resources\v1\Product\ProductCollection;
+use App\Http\Resources\v1\Product\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ProductResource;
-use App\Http\Resources\ProductResourceCollection;
+
 
 class ProductsController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return ProductCollection
      */
-    public function index()
+    public function index(): ProductCollection
     {
-        $products = Product::paginate(10);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'all products',
-            'data' => [
-                'products' => new ProductResourceCollection($products),
-            ],
-        ]);
+        $products = Product::paginate();
+        return new ProductCollection($products);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -59,24 +53,22 @@ class ProductsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Product $product
+     * @return ProductResource
      */
-    public function show($id)
+    public function show(Product $product): ProductResource
     {
-        $product = Product::findOrFail($id);
-
         return new ProductResource($product);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param \Illuminate\Http\Request $request
+     * @param Product $product
+     * @return ProductResource
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Product $product): ProductResource
     {
         $request->validate([
             'name' => 'required',
@@ -84,25 +76,37 @@ class ProductsController extends Controller
             'long_description' => 'string',
             'price' => 'required|numeric',
         ]);
-
-        $product = Product::findOrFail($id);
         $product->update($request->all());
 
-        return $product;
+        return new ProductResource($product);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Product $product
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
+    public function destroy(Product $product): \Illuminate\Http\JsonResponse
     {
-        $product = Product::destroy($id);
+        $product->delete();
         return response()->json([
             'success' => true,
             'message' => 'product delete succssfully'
         ], 200);
+    }
+
+    /**
+     * @param Request $request
+     * @param string $query
+     * @return ProductCollection
+     */
+    public function search(Request $request, string $query): ProductCollection
+    {
+        $products = Product::where('name', 'like', '%' . $query . '%')
+            ->orWhere('small_description', 'like', '%' . $query . '%')
+            ->orWhere('long_description', 'like', '%' . $query . '%')
+            ->paginate(15);
+        return new ProductCollection($products);
     }
 }

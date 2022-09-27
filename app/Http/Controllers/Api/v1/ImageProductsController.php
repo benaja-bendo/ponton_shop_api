@@ -2,137 +2,84 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\Http\Resources\v1\ImageProduct\ImageProductResource;
 use App\Models\ImageProduct;
+use App\Models\Product;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class ImageProductsController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        $imagesProduct = ImageProduct::all();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'all products',
-            'data' => [
-                'imagesProduct' => $imagesProduct,
-            ],
-        ]);
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
-        $this->validate($request, [
+        $request->validate([
             'path' => 'required|image|mimes:jpg,png,jpeg|max:2048',
-            'cover' => 'boolean',
             'product_id' => 'required'
         ]);
+        $product = Product::findOrFail($request->product_id);
+        $imagesProduct = $product->imageProduct()->create([
+            "path" => saveFileToStorageDirectory($request, 'path', 'images_product'),
+        ]);
+        return response()->json([
+            'success' => true,
+            'message' => 'ImageProduct create success',
+            'data' => new ImageProductResource($imagesProduct)
+        ], 201);
 
-        $path = null;
-
-        $imagesProduct = ImageProduct::where('cover',1)->where('product_id',$request->product_id)->first();
-
-        if ($imagesProduct)
-        {
-            dd("Une image pour ce produit est déja en cover ");
-        } else
-
-        {
-            if ($request->hasFile("path")) {
-                $path = saveFileToStorageDirectory($request,"path","images_products");
-            }
-
-            $data = ImageProduct::create(
-                [
-                    'path' => $path,
-                    'cover' => $request->cover,
-                    'product_id' => $request->product_id
-                ]
-            );
-
-            return response()->json([
-                'success' => true,
-                'message' => 'ImageProduct create succssfully',
-                'data' => [
-                    'image' => $data,
-                ],
-            ], 201);
-        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param ImageProduct $imageProduct
+     * @return ImageProductResource
      */
-    public function show($id)
+    public function show(ImageProduct $imageProduct): ImageProductResource
     {
-        $image = ImageProduct::findOrFail($id);
-
-        return $image;
+        return new ImageProductResource($imageProduct);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param ImageProduct $imageProduct
+     * @return JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, ImageProduct $imageProduct): JsonResponse
     {
-        $this->validate($request, [
+        $request->validate([
             'path' => 'required|image|mimes:jpg,png,jpeg|max:2048',
-            'cover' => 'boolean',
             'product_id' => 'required'
         ]);
-
-        $image = ImageProduct::findOrFail($id);
-
-        $path = null;
-
-        if ($request->hasFile("path")) {
-            $path = saveFileToStorageDirectory($request,"path","images_products");
-        }
-
-        $image->update(
-            [
-                'path' => $path,
-                'cover' => $request->cover,
-                'product_id' => $request->product_id
-            ]
-        );
-
-        return $image;
+        $imageProduct->path = saveFileToStorageDirectory($request, "path", "images_products");
+        $imageProduct->save();
+        return response()->json([
+            'success' => true,
+            'message' => 'ImageProduct update success',
+            'data' => new ImageProductResource($imageProduct)
+        ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param ImageProduct $imageProduct
+     * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy(ImageProduct $imageProduct): JsonResponse
     {
-        $image = ImageProduct::findOrFail($id);
-        $image->destroy($id);
+        $imageProduct->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'image product delete succssfully'
         ], 200);
     }
 }
