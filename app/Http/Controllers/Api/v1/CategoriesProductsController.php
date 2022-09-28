@@ -2,106 +2,81 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\Http\Resources\v1\CategorieProduct\CategorieProductResource;
 use Illuminate\Http\Request;
 use App\Models\CategorieProduct;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CategorieProductResource;
-use App\Http\Resources\CategorieProductResourceCollection;
+
+//use App\Http\Resources\CategorieProductResource;
+//use App\Http\Resources\CategorieProductResourceCollection;
 
 class CategoriesProductsController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|CategorieProductResource
      */
-    public function index()
+    public function index(): \Illuminate\Http\JsonResponse|CategorieProductResource
     {
-
-        $CategorieProducts = CategorieProduct::all();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'all catégories products',
-            'data' => [
-                'CategorieProducts' => new CategorieProductResourceCollection($CategorieProducts),
-                // 'CategorieProducts' => CategorieProductRessource::collection($CategorieProducts),
-            ],
-
-        ]);
+        return new CategorieProductResource(CategorieProduct::paginate());
     }
 
-
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([
-            'name'=>'required',
+            'name' => 'required',
         ]);
-
-        $CategorieProduct = CategorieProduct::create($request->all());
-
+        $categorieProduct = CategorieProduct::create([
+            'name' => $request->name
+        ]);
         return response()->json([
             'success' => true,
-            'message' => 'catégorie create succssfully',
-            'data' => [
-                'CategorieProduct' => $CategorieProduct,
-            ],
+            'message' => 'catégorie create success',
+            'data' => new CategorieProductResource($categorieProduct),
         ], 201);
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\CategorieProduct  $categorieProduct
-     * @return \Illuminate\Http\Response
+     * @param CategorieProduct $categorieProduct
+     * @return CategorieProductResource
      */
-    public function show(CategorieProduct $categorieProduct,$id)
+    public function show(CategorieProduct $categorieProduct): CategorieProductResource
     {
-        $categorieProduct = CategorieProduct::findOrFail($id);
-
         return new CategorieProductResource($categorieProduct);
     }
 
-
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\CategorieProduct  $categorieProduct
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param CategorieProduct $categorieProduct
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, CategorieProduct $categorieProduct, $id)
+    public function update(Request $request, CategorieProduct $categorieProduct): \Illuminate\Http\JsonResponse
     {
         $request->validate([
-            'name'=>'required',
+            'name' => 'required|unique:categorie_products,name',
         ]);
+        $categorieProduct->name = $request->name;
+        $result = $categorieProduct->save();
 
-        $categorieProduct = CategorieProduct::findOrFail($id);
-        $categorieProduct->update($request->all());
-
-        return $categorieProduct;
+        return response()->json([
+            "success" => $result,
+        ]);
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\CategorieProduct  $categorieProduct
-     * @return \Illuminate\Http\Response
+     * @param CategorieProduct $categorieProduct
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(CategorieProduct $categorieProduct, $id)
+    public function destroy(CategorieProduct $categorieProduct): \Illuminate\Http\JsonResponse
     {
-        $categorieProduct = CategorieProduct::findOrFail($id);
-        $categorieProduct = CategorieProduct::destroy($id);
-
+        $resultat = $categorieProduct->delete();
         return response()->json([
-            'success' => true,
-            'message' => 'catégorie delete succssfully'
+            'success' => $resultat,
         ], 200);
     }
 }

@@ -18,8 +18,8 @@ class Product extends Model
         return $this->hasMany(ImageProduct::class);
     }
 
-    public function categorieProduct()
+    public function categories(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsTo(CategorieProduct::class);
+        return $this->belongsToMany(CategorieProduct::class, 'categorie_has_product', 'product_id', 'categorie_product_id');
     }
 }

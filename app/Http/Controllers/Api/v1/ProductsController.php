@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Resources\v1\Product\ProductCollection;
 use App\Http\Resources\v1\Product\ProductResource;
 use App\Models\Product;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Response;
 
 
 class ProductsController extends Controller
@@ -18,19 +20,17 @@ class ProductsController extends Controller
      */
     public function index(): ProductCollection
     {
-        $products = Product::paginate();
-        return new ProductCollection($products);
+        return new ProductCollection(Product::paginate());
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-
         $request->validate([
             'name' => 'required',
             'small_description' => 'required|string',
@@ -64,7 +64,7 @@ class ProductsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param Product $product
      * @return ProductResource
      */
@@ -108,5 +108,77 @@ class ProductsController extends Controller
             ->orWhere('long_description', 'like', '%' . $query . '%')
             ->paginate(15);
         return new ProductCollection($products);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function addOneImage(Request $request): JsonResponse
+    {
+        $request->validate([
+            'path' => 'required|image|mimes:jpg,png,jpeg|max:2048',
+            'product_id' => 'required'
+        ]);
+        $product = Product::findOrFail($request->product_id);
+        $imagesProduct = $product->imageProduct()->create([
+            "path" => saveFileToStorageDirectory($request, 'path', 'images_product'),
+        ]);
+        return response()->json([
+            'success' => true,
+        ], 201);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function removeOneImage(Request $request): JsonResponse
+    {
+        $request->validate([
+            'product_id' => 'required',
+            'image_products_id' => 'required'
+        ]);
+        $product = Product::findOrFail($request->product_id);
+        $resultat = $product->imageProduct()->delete($request->image_products_id);
+        return response()->json([
+            'success' => $resultat,
+        ], 201);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function addCategorie(Request $request): JsonResponse
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'categorie_product_id' => 'required|exists:categorie_products,id',
+        ]);
+        $product = Product::findOrFail($request->product_id);
+        $product->categories()->attach($request->categorie_product_id);
+        return response()->json([
+            "success" => true,
+            "data" => new ProductResource($product)
+        ], 200);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function removeCategorie(Request $request): JsonResponse
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'categorie_product_id' => 'required|exists:categorie_products,id',
+        ]);
+        $product = Product::findOrFail($request->product_id);
+        $product->categories()->detach($request->categorie_product_id);
+        return response()->json([
+            "success" => true,
+            "data" => new ProductResource($product)
+        ], 200);
     }
 }

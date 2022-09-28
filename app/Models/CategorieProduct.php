@@ -12,13 +12,9 @@ class CategorieProduct extends Model
 
     protected $guarded = [];
 
-    public function products()
+    public function products(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->hasMany(Product::class,'product_id');
+        return $this->belongsToMany(Product::class, 'categorie_has_product', 'categorie_product_id', 'product_id');
     }
 
-    public function subCategorieProducts()
-    {
-        return $this->hasMany(SubCategorieProduct::class);
-    }
 }

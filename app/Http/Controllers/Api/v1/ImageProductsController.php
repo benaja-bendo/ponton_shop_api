@@ -77,7 +77,6 @@ class ImageProductsController extends Controller
     public function destroy(ImageProduct $imageProduct): JsonResponse
     {
         $imageProduct->delete();
-
         return response()->json([
             'success' => true,
         ], 200);

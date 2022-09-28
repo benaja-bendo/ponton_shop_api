@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\v1\User;
 
+use App\Http\Resources\v1\Role\RoleCollection;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -27,7 +28,7 @@ class UserResource extends JsonResource
             "genre" => $this->userInfo->genre ?? null,
             "city" => $this->userInfo->city ?? null,
             "phone" => $this->userInfo->phone ?? null,
-            //"roles" => new RoleCollection($this->roles),
+            "roles" => new RoleCollection($this->roles),
             "updated_at" => Carbon::parse($this->updated_at)->timestamp ?? null,
             'created_at' => Carbon::parse($this->created_at)->timestamp ?? null,
         ];

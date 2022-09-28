@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\v1\Product;
 
+use App\Http\Resources\v1\CategorieProduct\CategorieProductCollection;
 use App\Http\Resources\v1\ImageProduct\ImageProductCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -24,6 +25,7 @@ class ProductResource extends JsonResource
             'disponible' => $this->disponible,
             'status' => $this->status,
             'images' => new ImageProductCollection($this->imageProduct),
+            'categories' => new CategorieProductCollection($this->categories),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
