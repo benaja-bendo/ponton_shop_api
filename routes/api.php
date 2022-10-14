@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\v1\HomeController as v1HomeController;
 Route::get('/', v1HomeController::class);
 
 Route::prefix('v1')->group(function () {
+    Route::middleware(['cors','web'])->group(function () {
 //Auth
     Route::post('/register', [AuthController::class, 'createUser']);
     Route::post('/login', [AuthController::class, 'loginUser']);
@@ -47,5 +48,6 @@ Route::prefix('v1')->group(function () {
 
     Route::group(["middleware" => ['auth:sanctum']], function () {
         Route::post('/logout', [AuthController::class, 'logout']);
+    });
     });
 });
